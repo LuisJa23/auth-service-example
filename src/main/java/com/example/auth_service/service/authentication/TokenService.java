@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.List;
+
 
 @Service
 public class TokenService {
@@ -31,7 +31,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("auth-service-example") //Este iss debe ser igual
                     .withSubject(authenticatedUser.getUsername())
-                    .withClaim("id", authenticatedUser.getId().toString())
+                    .withClaim("id", authenticatedUser.getId())
                     .withClaim("roles", authenticatedUser.getRoles().stream()
                             .map(Role::getName)
                             .toList())

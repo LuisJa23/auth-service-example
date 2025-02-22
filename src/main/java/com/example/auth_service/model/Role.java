@@ -20,8 +20,9 @@ public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+    @Column(nullable = false, updatable = false, unique = true)
+    private String id = UUID.randomUUID().toString();
+
 
     @Column(nullable = false)
     private String name;
@@ -31,4 +32,8 @@ public class Role {
 
     @ManyToMany(mappedBy = "roles")
     private List<User> users;
+
+    public String getName() {
+        return name;
+    }
 }

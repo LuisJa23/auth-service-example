@@ -1,7 +1,9 @@
 package com.example.auth_service.controller;
 
 
+import com.example.auth_service.dto.JWTAndLoginAuthenticatedDTO;
 import com.example.auth_service.dto.UserAuthenticationDTO;
+import com.example.auth_service.model.User;
 import com.example.auth_service.service.UserService;
 import com.example.auth_service.service.authentication.TokenService;
 import jakarta.transaction.Transactional;
@@ -31,20 +33,19 @@ public class AuthenticationController {
 
 
 
-//    @PostMapping
-//    @Transactional
-//    public ResponseEntity authenticateLogin(@RequestBody @Valid UserAuthenticationDTO userAuthenticationData) {
-//
-//        var login = userService.getLoginByUsername(loginAuthenticationData.username());
-//
-//        Authentication authToken = new UsernamePasswordAuthenticationToken(loginAuthenticationData.username(),
-//                loginAuthenticationData.password());
-//        var authenticatedUser = authenticationManager.authenticate(authToken);
-//        String JWTToken = tokenService.generateToken((Login) authenticatedUser.getPrincipal(), (Login) login);
-//
-//
-//        return ResponseEntity.ok(new JWTAndLoginAuthenticatedDTO((Login) login, JWTToken));
-//    }
+    @PostMapping
+    @Transactional
+    public ResponseEntity authenticateLogin(@RequestBody @Valid UserAuthenticationDTO userAuthenticationData) {
+
+        var user = userService.getUserByEmail(userAuthenticationData.email());
+
+        Authentication authToken = new UsernamePasswordAuthenticationToken(userAuthenticationData.email(),
+                userAuthenticationData.password());
+        var authenticatedUser = authenticationManager.authenticate(authToken);
+        String JWTToken = tokenService.generateToken((User) authenticatedUser.getPrincipal(), (User) user);
+
+        return ResponseEntity.ok(new JWTAndLoginAuthenticatedDTO((User) user, JWTToken));
+    }
 
 
 

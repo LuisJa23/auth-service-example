@@ -29,8 +29,9 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+    @Column(nullable = false, updatable = false, unique = true)
+    private String id = UUID.randomUUID().toString();
+
 
 
     private String name;
@@ -45,7 +46,7 @@ public class User implements UserDetails {
 
     private Integer failedAttempts;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -90,5 +91,15 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public String getId() {
+        return id;
+    }
+    public List<Role> getRoles() {
+        return roles;
+    }
+    public String getName() {
+        return name;
     }
 }
