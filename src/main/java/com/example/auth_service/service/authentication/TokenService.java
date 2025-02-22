@@ -24,9 +24,7 @@ public class TokenService {
     public String generateToken(User authenticatedUser, User user) {
         password = user.getPassword();
 
-        List<String> roles = authenticatedUser.getRoles().stream()
-                .map(Role::getName)
-                .toList();
+
 
         try {
             Algorithm algorithm = Algorithm.HMAC256(password);
@@ -34,7 +32,9 @@ public class TokenService {
                     .withIssuer("auth-service-example") //Este iss debe ser igual
                     .withSubject(authenticatedUser.getUsername())
                     .withClaim("id", authenticatedUser.getId().toString())
-                    .withClaim("roles", roles)
+                    .withClaim("roles", authenticatedUser.getRoles().stream()
+                            .map(Role::getName)
+                            .toList())
                     .withExpiresAt(generateExpirationDate()) //Generar un tiempo para que expire
                     .sign(algorithm);
         } catch (JWTCreationException exception){
