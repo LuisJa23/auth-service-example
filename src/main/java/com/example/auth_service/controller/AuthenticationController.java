@@ -2,7 +2,7 @@ package com.example.auth_service.controller;
 
 
 import com.example.auth_service.dto.JWTAndLoginAuthenticatedDTO;
-import com.example.auth_service.dto.UserAuthenticationDTO;
+import com.example.auth_service.dto.user.UserAuthenticationDTO;
 import com.example.auth_service.model.User;
 import com.example.auth_service.service.UserService;
 import com.example.auth_service.service.authentication.TokenService;

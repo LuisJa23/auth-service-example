@@ -8,7 +8,7 @@ import java.util.List;
 
 
 public record JWTAndLoginAuthenticatedDTO(
-        String id,
+        Long id,
         String username,
         List<Role> roles,
         String jwtToken

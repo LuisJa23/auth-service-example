@@ -1,6 +1,8 @@
 package com.example.auth_service.model;
 
 
+import com.example.auth_service.dto.user.UserRegisterDTO;
+import com.example.auth_service.infra.security.config.HmacEncryption;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -28,9 +31,9 @@ import java.util.UUID;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, unique = true)
-    private String id = UUID.randomUUID().toString();
+    private Long id;
 
 
 
@@ -52,7 +55,19 @@ public class User implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();;
+
+    public User(UserRegisterDTO userRegisterDTO) {
+        this.name = userRegisterDTO.username();
+        this.email = userRegisterDTO.email();
+        this.password = HmacEncryption.encryptKey(userRegisterDTO.password());
+        this.status = true;
+        this.failedAttempts = 0;
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
 
 
     @Override
@@ -105,7 +120,7 @@ public class User implements UserDetails {
         failedAttempts = 0;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
     public List<Role> getRoles() {
@@ -117,5 +132,9 @@ public class User implements UserDetails {
 
     public int getFailedAttempts() {
         return failedAttempts;
+    }
+
+    public String getEmail() {
+        return email;
     }
 }

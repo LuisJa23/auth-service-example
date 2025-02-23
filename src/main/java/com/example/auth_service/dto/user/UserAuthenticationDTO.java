@@ -1,4 +1,4 @@
-package com.example.auth_service.dto;
+package com.example.auth_service.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;

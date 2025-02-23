@@ -19,9 +19,9 @@ import java.util.UUID;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false, unique = true)
-    private String id = UUID.randomUUID().toString();
+    private Long id;
 
 
     @Column(nullable = false)
