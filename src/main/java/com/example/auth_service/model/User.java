@@ -93,6 +93,18 @@ public class User implements UserDetails {
         return true;
     }
 
+
+    public void increaseFailedLoginAttempts() {
+        failedAttempts++;
+        if(failedAttempts >= 5) {
+            status = false;
+        }
+    }
+
+    public void resetFailedLoginAttempts() {
+        failedAttempts = 0;
+    }
+
     public String getId() {
         return id;
     }
@@ -101,5 +113,9 @@ public class User implements UserDetails {
     }
     public String getName() {
         return name;
+    }
+
+    public int getFailedAttempts() {
+        return failedAttempts;
     }
 }

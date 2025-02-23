@@ -9,8 +9,10 @@ import com.example.auth_service.service.authentication.TokenService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,17 +37,31 @@ public class AuthenticationController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity authenticateLogin(@RequestBody @Valid UserAuthenticationDTO userAuthenticationData) {
+    public ResponseEntity<JWTAndLoginAuthenticatedDTO> authenticateLogin(@RequestBody @Valid UserAuthenticationDTO userAuthenticationData) {
 
         var user = userService.getUserByEmail(userAuthenticationData.email());
 
-        Authentication authToken = new UsernamePasswordAuthenticationToken(userAuthenticationData.email(),
-                userAuthenticationData.password());
-        var authenticatedUser = authenticationManager.authenticate(authToken);
-        String JWTToken = tokenService.generateToken((User) authenticatedUser.getPrincipal(), (User) user);
+        try {
+            Authentication authToken = new UsernamePasswordAuthenticationToken(userAuthenticationData.email(),
+                    userAuthenticationData.password());
+            var authenticatedUser = authenticationManager.authenticate(authToken);
+            String JWTToken = tokenService.generateToken((User) authenticatedUser.getPrincipal(), (User) user);
 
-        return ResponseEntity.ok(new JWTAndLoginAuthenticatedDTO((User) user, JWTToken));
+            // Si la autenticación es exitosa, restablecer intentos fallidos si existen
+            if (user.getFailedAttempts() > 0) {
+                user.resetFailedLoginAttempts();
+                userService.updateUser(user);
+            }
+
+            return ResponseEntity.ok(new JWTAndLoginAuthenticatedDTO((User) user, JWTToken));
+
+        } catch (BadCredentialsException e) {
+            // Incrementar intentos fallidos y devolver un error
+            userService.increaseFailedLoginAttempts(user);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
+
 
 
 

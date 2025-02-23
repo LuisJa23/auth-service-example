@@ -14,4 +14,17 @@ public class UserService {
     public User getUserByEmail(String email) {
         return (User) userRepository.findByEmail(email);
     }
+
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
+
+    public void increaseFailedLoginAttempts(User user) {
+        if(user.getFailedAttempts() >= 5){
+            return;
+        }
+
+        user.increaseFailedLoginAttempts();
+        userRepository.save(user);
+    }
 }
