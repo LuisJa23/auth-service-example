@@ -57,6 +57,10 @@ public class User implements UserDetails {
     )
     private List<Role> roles = new ArrayList<>();;
 
+    // Constructor vacío (OBLIGATORIO para Hibernate)
+    public User() {
+    }
+
     public User(UserRegisterDTO userRegisterDTO) {
         this.name = userRegisterDTO.username();
         this.email = userRegisterDTO.email();

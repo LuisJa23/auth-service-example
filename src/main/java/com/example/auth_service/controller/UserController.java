@@ -3,6 +3,7 @@ package com.example.auth_service.controller;
 import com.example.auth_service.dto.user.UserRegisterDTO;
 import com.example.auth_service.dto.user.UserRegisterResponseDTO;
 import com.example.auth_service.service.UserService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
+    @Transactional
     public ResponseEntity<UserRegisterResponseDTO> registerUser(@RequestBody @Valid UserRegisterDTO userRegisterDTO) {
 
         return ResponseEntity.ok(userService.registerUser(userRegisterDTO));
