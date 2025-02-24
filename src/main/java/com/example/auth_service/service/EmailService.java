@@ -21,6 +21,9 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     public VerificationCodeRecoveryPasswordDTO sendRecoveryCode(String toEmail) {
+        if (!userRepository.existsByEmail(toEmail)) {
+            throw new IllegalArgumentException("No existe un usuario con ese correo electrónico.");
+        }
 
         String recoveryCode = String.format("%06d", new Random().nextInt(999999));
 
@@ -44,7 +47,7 @@ public class EmailService {
 
         var code = HmacEncryption.encryptKey(recoveryCode);
 
-        return new VerificationCodeRecoveryPasswordDTO(code);
+        return new VerificationCodeRecoveryPasswordDTO(toEmail, code);
 
 
 

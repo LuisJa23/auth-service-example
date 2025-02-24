@@ -10,12 +10,12 @@ import java.util.List;
 public record JWTAndLoginAuthenticatedDTO(
         Long id,
         String username,
-        List<Role> roles,
+        List<String> roles,
         String jwtToken
 
 ) {
     public JWTAndLoginAuthenticatedDTO(User user, String jwtToken)
     {
-        this(user.getId(), user.getUsername(), user.getRoles(), jwtToken);
+        this(user.getId(), user.getUsername(), user.getRoles().stream().map(Role::getName).toList(), jwtToken);
     }
 }

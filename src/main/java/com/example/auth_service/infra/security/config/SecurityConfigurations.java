@@ -38,7 +38,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/business/user").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/email/password-recovery").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/change-password").permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/email/password-recovery").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

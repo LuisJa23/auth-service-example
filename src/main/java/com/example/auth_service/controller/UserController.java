@@ -1,5 +1,6 @@
 package com.example.auth_service.controller;
 
+import com.example.auth_service.dto.ChangePasswordDTO;
 import com.example.auth_service.dto.user.UserRegisterDTO;
 import com.example.auth_service.dto.user.UserRegisterResponseDTO;
 import com.example.auth_service.service.UserService;
@@ -24,6 +25,14 @@ public class UserController {
     public ResponseEntity<UserRegisterResponseDTO> registerUser(@RequestBody @Valid UserRegisterDTO userRegisterDTO) {
 
         return ResponseEntity.ok(userService.registerUser(userRegisterDTO));
+    }
+
+    @PostMapping("/change-password")
+    @Transactional
+    public ResponseEntity changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO) {
+
+        userService.changePassword(changePasswordDTO);
+        return ResponseEntity.ok().build();
     }
 
 }

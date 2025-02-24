@@ -1,7 +1,9 @@
 package com.example.auth_service.service;
 
+import com.example.auth_service.dto.ChangePasswordDTO;
 import com.example.auth_service.dto.user.UserRegisterDTO;
 import com.example.auth_service.dto.user.UserRegisterResponseDTO;
+import com.example.auth_service.infra.security.config.HmacEncryption;
 import com.example.auth_service.model.Role;
 import com.example.auth_service.model.User;
 import com.example.auth_service.repository.RoleRepository;
@@ -48,6 +50,17 @@ public class UserService {
         }
 
         user.increaseFailedLoginAttempts();
+        userRepository.save(user);
+    }
+
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
+        User user = (User) userRepository.findByEmail(changePasswordDTO.email());
+        String password = HmacEncryption.encryptKey(changePasswordDTO.password());
+
+        user.setPassword(password);
+        user.resetFailedLoginAttempts();
+        user.setStatus(true);
+
         userRepository.save(user);
     }
 }

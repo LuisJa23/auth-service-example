@@ -41,6 +41,14 @@ public class AuthenticationController {
 
         var user = userService.getUserByEmail(userAuthenticationData.email());
 
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        if(!user.getStatus()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         try {
             Authentication authToken = new UsernamePasswordAuthenticationToken(userAuthenticationData.email(),
                     userAuthenticationData.password());

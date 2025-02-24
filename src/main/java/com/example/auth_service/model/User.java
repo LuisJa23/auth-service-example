@@ -57,9 +57,7 @@ public class User implements UserDetails {
     )
     private List<Role> roles = new ArrayList<>();;
 
-    // Constructor vacío (OBLIGATORIO para Hibernate)
-    public User() {
-    }
+
 
     public User(UserRegisterDTO userRegisterDTO) {
         this.name = userRegisterDTO.username();
@@ -124,21 +122,5 @@ public class User implements UserDetails {
         failedAttempts = 0;
     }
 
-    public Long getId() {
-        return id;
-    }
-    public List<Role> getRoles() {
-        return roles;
-    }
-    public String getName() {
-        return name;
-    }
 
-    public int getFailedAttempts() {
-        return failedAttempts;
-    }
-
-    public String getEmail() {
-        return email;
-    }
 }
