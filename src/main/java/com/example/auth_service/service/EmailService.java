@@ -3,12 +3,16 @@ package com.example.auth_service.service;
 
 import com.example.auth_service.dto.VerificationCodeRecoveryPasswordDTO;
 import com.example.auth_service.infra.security.config.HmacEncryption;
+import com.example.auth_service.model.SecurityCode;
+import com.example.auth_service.model.User;
+import com.example.auth_service.repository.SecurityCodeRepository;
 import com.example.auth_service.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
@@ -16,6 +20,9 @@ public class EmailService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SecurityCodeRepository securityCodeRepository;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -43,13 +50,26 @@ public class EmailService {
                         "El equipo de soporte");
 
 
-        mailSender.send(message);
 
-        var code = HmacEncryption.encryptKey(recoveryCode);
+        mailSender.send(message);
+        String code = HmacEncryption.encryptKey(recoveryCode);
+        User user = (User) userRepository.findByEmail(toEmail);
+
+        if(user.getSecurityCode() == null){
+            SecurityCode securityCode = new SecurityCode(code, user);
+            user.setSecurityCode(securityCode);
+            securityCodeRepository.save(securityCode);
+            userRepository.save(user);
+            return new VerificationCodeRecoveryPasswordDTO(toEmail, recoveryCode);
+        }
+        SecurityCode securityCode = user.getSecurityCode();
+        securityCode.setCode(code);
+        securityCode.setStatus(true);
+        securityCode.setExpirationTime(LocalDateTime.now().plusMinutes(10));
+
+        securityCodeRepository.save(securityCode);
 
         return new VerificationCodeRecoveryPasswordDTO(toEmail, code);
-
-
 
 
     }

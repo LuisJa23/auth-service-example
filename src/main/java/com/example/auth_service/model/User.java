@@ -49,6 +49,9 @@ public class User implements UserDetails {
 
     private Integer failedAttempts;
 
+    @OneToOne(mappedBy="user")
+    private SecurityCode securityCode;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",

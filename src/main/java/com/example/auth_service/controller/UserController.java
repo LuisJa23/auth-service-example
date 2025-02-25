@@ -3,6 +3,7 @@ package com.example.auth_service.controller;
 import com.example.auth_service.dto.ChangePasswordDTO;
 import com.example.auth_service.dto.user.UserRegisterDTO;
 import com.example.auth_service.dto.user.UserRegisterResponseDTO;
+import com.example.auth_service.dto.user.ValidateSecurityCodeDTO;
 import com.example.auth_service.service.UserService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -27,6 +28,18 @@ public class UserController {
         return ResponseEntity.ok(userService.registerUser(userRegisterDTO));
     }
 
+    @PostMapping("/validate-code")
+    @Transactional
+    public ResponseEntity validateCode(@RequestBody @Valid ValidateSecurityCodeDTO changePasswordDTO) {
+
+        if(userService.isValidateCode(changePasswordDTO)){
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
+
     @PostMapping("/change-password")
     @Transactional
     public ResponseEntity changePassword(@RequestBody @Valid ChangePasswordDTO changePasswordDTO) {
@@ -34,5 +47,7 @@ public class UserController {
         userService.changePassword(changePasswordDTO);
         return ResponseEntity.ok().build();
     }
+
+
 
 }
