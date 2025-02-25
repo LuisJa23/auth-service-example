@@ -103,13 +103,10 @@ public class UserService {
             throw new IllegalArgumentException("Código de seguridad inválido.");
         }
 
-        if (!securityCode.getCode().equals(HmacEncryption.encryptKey(validateSecurityCodeDTO.securityCode()))) {
-            throw new IllegalArgumentException("Código de seguridad inválido.");
-        }
 
-        if (!HmacEncryption.verifyKey(securityCode.getCode(), validateSecurityCodeDTO.securityCode())) {
+        if (!HmacEncryption.verifyKey(validateSecurityCodeDTO.securityCode(), securityCode.getCode())) {
 
-            throw new IllegalArgumentException("Código de seguridad inválido.");
+            throw new IllegalArgumentException("Código de seguridad inválido 2.");
         }
 
 
